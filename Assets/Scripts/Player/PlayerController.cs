@@ -49,6 +49,11 @@ public class PlayerController : MonoBehaviour
         OnRoadAvaliabilityChanged();
     }
 
+    private void OnDisable()
+    {
+        RoadChecker.RoadAvaliabilityChanged -= OnRoadAvaliabilityChanged;
+    }
+
     private void OnRoadAvaliabilityChanged()
     {
         if (RoadChecker.Instance.IsRoadAvaliable)

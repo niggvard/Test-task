@@ -29,8 +29,15 @@ public class RoadChecker : MonoBehaviour
     {
         IsRoadAvaliable = true;
         _defaultOffset = transform.position - PlayerController.Instance.transform.position;
+        
         PlayerController.ProjectileLaunched += ChangeWidth;
         Enemy.EnemyKilled += OnEnemyKilled;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.ProjectileLaunched -= ChangeWidth;
+        Enemy.EnemyKilled -= OnEnemyKilled;
     }
 
     private void OnEnemyKilled(Enemy enemy)
@@ -67,6 +74,18 @@ public class RoadChecker : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        Enemy enemy;
+        if (enemy = other.GetComponent<Enemy>())
+        {
+            if (enemy.IsDying) return;
+
+            _enemies.Remove(enemy);
+            OnEnemiesCountChanged();
+        }
+    }
+
     private void OnEnemiesCountChanged()
     {
         if (_enemies.Count > 0)
@@ -76,10 +95,5 @@ public class RoadChecker : MonoBehaviour
 
         if (_enemies.Count == 0 || _enemies.Count == 1)
             RoadAvaliabilityChanged?.Invoke();
-    }
-
-    void Update()
-    {
-        //print(_enemies.Count);
     }
 }
